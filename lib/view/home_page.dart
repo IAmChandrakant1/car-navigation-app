@@ -35,6 +35,12 @@ class _HomePageState extends StateMVC<HomePage> {
     _con.getCurrentLocation();
   }
 
+  late Uint8List markerIcon;
+
+  void data() async {
+     markerIcon = await _con.getBytesFromAsset('assets/img/car.png', 120);
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -49,6 +55,9 @@ class _HomePageState extends StateMVC<HomePage> {
           children: <Widget>[
             GoogleMap(
               markers: Set<Marker>.from(_con.markers),
+              // markers: {
+              //   if (_con.carMarker != null) _con.carMarker,
+              // },
               initialCameraPosition: _con.initialLocation,
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
@@ -63,6 +72,7 @@ class _HomePageState extends StateMVC<HomePage> {
                   width: 6,
                 ),
               },
+
               //polylines: Set<Polyline>.of(polylines.values),
               onMapCreated: (GoogleMapController controller) {
                 _con.mapController = controller;

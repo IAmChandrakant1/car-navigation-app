@@ -37,6 +37,9 @@ class HomeController extends ControllerMVC {
   late Marker startMarker;
   late Marker destinationMarker;
 
+  late Marker carMarker;
+  int animationCounter = 0;
+
   getCurrentLocation() async {
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) async {
@@ -214,10 +217,34 @@ class HomeController extends ControllerMVC {
     // });
 
     if (result.points.isNotEmpty) {
-      //polylineCoordinates.clear();
-      result.points.forEach((PointLatLng point) {
+      // polylineCoordinates.clear();
+      // result.points.forEach((PointLatLng point) {
+      //   polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+      // });
+
+      final Uint8List markerIcon =
+      await getBytesFromAsset('assets/img/car.png', 120);
+
+      for (PointLatLng point in result.points){
         polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
+        // carMarker = Marker(
+        //   markerId: MarkerId("car"),
+        //   position: LatLng(point.latitude, point.longitude),
+        //   icon: BitmapDescriptor.fromBytes(markerIcon),
+        // );
+
+         carMarker = Marker(
+          markerId: MarkerId("car"),
+          position: LatLng(point.latitude, point.longitude),
+          icon: BitmapDescriptor.fromBytes(markerIcon),
+        );
+        markers.add(carMarker);
+
+        animationCounter++;
+        notifyListeners();
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+
     }
 
     logPrint('points----> ${result.points}');
